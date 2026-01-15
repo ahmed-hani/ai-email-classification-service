@@ -15,40 +15,15 @@ privacy_encoder = joblib.load("app/models/privacy_encoder.pkl")
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 REFERENCE_PRIORITY = {
-    "HIGH": [
-        "urgent action required",
-        "immediate response needed",
-        "critical issue"
-    ],
-    "MEDIUM": [
-        "please review",
-        "needs attention",
-        "important but not urgent"
-    ],
-    "LOW": [
-        "no urgency",
-        "whenever you have time",
-        "for your information"
-    ]
+    "HIGH": ["urgent action required", "immediate response needed", "critical issue", "server down", "production issue"],
+    "MEDIUM": ["please review", "needs attention", "important but not urgent"],
+    "LOW": ["no urgency", "whenever you have time", "for your information"]
 }
 
 PRIVACY_REF = {
-    "HIGH": [
-        "confidential ",
-        "internal only",
-        "do not share",
-        "private data"
-    ],
-    "MEDIUM": [
-        "internal use",
-        "company discussion",
-        "team update"
-    ],
-    "LOW": [
-        "public announcement",
-        "can be shared",
-        "external communication"
-    ]
+    "HIGH": ["confidential", "internal only", "do not share", "private data"],
+    "MEDIUM": ["internal use", "company discussion", "team update"],
+    "LOW": ["public announcement", "can be shared", "external communication"]
 }
 
 
@@ -109,7 +84,7 @@ def classify_email(email: EmailRequest):
         source = "embeddings"
 
     # -------- Privacy fallback --------
-    if privacy_conf < 0.7:
+    if privacy_conf < THRESHOLD:
         privacy, privacy_conf = embedding_predict(
             text, PRIVACY_EMBEDDINGS
         )
